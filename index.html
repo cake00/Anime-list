@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #000;
+      color: #fff;
+    }
+    .table-container {
+      width: 80%;
+      max-height: 400px; /* Set maximum height for the table container */
+      overflow: auto; /* Enable vertical scrolling */
+      border: 2px solid #fff; /* White border */
+      border-radius: 10px; /* Rounded corners */
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Box shadow with transparency */
+      transition: box-shadow 0.3s ease; /* Smooth transition effect for box shadow */
+    }
+    /* Apply hover effect */
+    .table-container:hover {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.8); /* Increase box shadow on hover */
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    .search-bar {
+      margin-top: 20px;
+    }
+    input[type="text"],
+    button {
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+    }
+    input[type="text"] {
+      width: 200px;
+      margin-right: 10px;
+    }
+    button {
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    /* Style links */
+    .image-link {
+      color: #fff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Anime List</h1>
+  <div class="table-container">
+    <table id="anime-table">
+      <thead>
+        <tr>
+          <th>Anime ID</th>
+          <th>Title</th>
+          <th>Score</th>
+          <th>Image URL</th>
+          <th>Genre</th>
+          <th>Opening Theme</th>
+          <th>Ending Theme</th>
+        </tr>
+      </thead>
+      <tbody id="anime-list"></tbody>
+    </table>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Search by Title...">
+    <button id="search-button">Search by Title</button>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" id="search-id-input" placeholder="Search by ID...">
+    <button id="search-id-button">Search by ID</button>
+  </div>
+
+  <script>
+    document.getElementById('search-button').addEventListener('click', () => {
+      const searchTerm = document.getElementById('search-input').value.trim().toLowerCase();
+      const animeList = document.getElementById('anime-list');
+      animeList.innerHTML = ''; // Clear previous search results
+      fetch(`/search?searchTerm=${searchTerm}`)
+        .then(response => response.text())
+        .then(html => {
+          const animeTable = document.getElementById('anime-table');
+          if (html.trim() !== '') {
+            animeTable.style.display = 'table'; // Show table if search results are not empty
+            animeList.innerHTML = html; // Display search results
+          } else {
+            animeTable.style.display = 'none'; // Hide table if no results found
+          }
+        });
+    });
+
+    document.getElementById('search-id-button').addEventListener('click', () => {
+      const searchID = document.getElementById('search-id-input').value.trim().toLowerCase();
+      const animeList = document.getElementById('anime-list');
+      animeList.innerHTML = ''; // Clear previous search results
+      fetch(`/searchByID?searchID=${searchID}`)
+        .then(response => response.text())
+        .then(html => {
+          const animeTable = document.getElementById('anime-table');
+          if (html.trim() !== '') {
+            animeTable.style.display = 'table'; // Show table if search results are not empty
+            animeList.innerHTML = html; // Display search results
+          } else {
+            animeTable.style.display = 'none'; // Hide table if no results found
+          }
+        });
+    });
+  </script>
+</body>
+</html>
